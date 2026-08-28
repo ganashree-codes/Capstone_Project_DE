@@ -1,0 +1,8 @@
+.env
+venv/
+__pycache__/
+*.pyc
+producer/data/*.csv
+spark_jobs/checkpoints/
+faker_source/dropzone/*.json
+.DS_Store
