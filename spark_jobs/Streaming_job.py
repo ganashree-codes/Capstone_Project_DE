@@ -92,10 +92,11 @@ SILVER_CHECKPOINT = "spark_jobs/checkpoints/silver_transactions"
 
 spark = SparkSession.builder \
     .appName("FinShield-StreamingPipeline") \
-    .config("spark.jars.packages",
-            "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0,"
-            "net.snowflake:snowflake-jdbc:3.13.30,"
-            "net.snowflake:spark-snowflake_2.12:2.15.0-spark_3.4") \
+    .master("local[1]") \
+    .config("spark.driver.bindAddress", "127.0.0.1") \
+    .config("spark.driver.host", "127.0.0.1") \
+    .config("spark.pyspark.driver.python", "python") \
+    .config("spark.pyspark.python", "python") \
     .getOrCreate()
 
 spark.sparkContext.setLogLevel("WARN")
@@ -229,6 +230,18 @@ def apply_fraud_detection(df):
 # Stage B + C + D + E + F, combined per micro-batch via foreachBatch
 # =========================================================================
 
+SILVER_COLUMN_ORDER = [
+    "transaction_id", "event_timestamp", "cc_num_hash", "merchant", "category",
+    "amt", "customer_first_name", "customer_last_name", "gender", "street",
+    "city", "state", "zip", "customer_lat", "customer_long", "city_pop",
+    "job", "dob", "merch_lat", "merch_long", "is_fraud",
+    "risk_score", "is_blacklisted", "last_flagged_date", "compliance_status", "last_updated",
+    "txn_count_in_batch", "high_amount_flag", "high_velocity_flag",
+    "high_risk_merchant_flag", "blacklisted_merchant_flag",
+    "risk_score_computed", "fraud_flag"
+]
+
+
 def process_silver_batch(batch_df, batch_id):
     if batch_df.count() == 0:
         return
@@ -251,6 +264,11 @@ def process_silver_batch(batch_df, batch_id):
     # Stage E: fraud detection
     flagged = apply_fraud_detection(masked)
 
+    # NEW: force column order to exactly match the Snowflake table's DDL -
+    # the Snowflake connector writes by column POSITION, not by name, so
+    # a mismatched order silently sends values into the wrong columns.
+    flagged = flagged.select(*SILVER_COLUMN_ORDER)
+
     # Stage F: write to Silver
     write_snowflake(flagged, "SILVER", "TRANSACTIONS_ENRICHED")
     print(f"[Silver batch {batch_id}] wrote {flagged.count()} rows "
@@ -262,10 +280,6 @@ silver_query = txn_parsed_stream.writeStream \
     .option("checkpointLocation", SILVER_CHECKPOINT) \
     .outputMode("append") \
     .start()
-
-# =========================================================================
-# Keep all streaming queries alive
-# =========================================================================
 
 print("All streaming queries started. Waiting for data...")
 spark.streams.awaitAnyTermination()
