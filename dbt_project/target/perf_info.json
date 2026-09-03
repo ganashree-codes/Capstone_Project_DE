@@ -1,0 +1,56 @@
+{
+    "path_count": 164,
+    "parsed_path_count": 164,
+    "static_analysis_path_count": 5,
+    "static_analysis_parsed_path_count": 5,
+    "is_partial_parse_enabled": true,
+    "is_static_analysis_enabled": true,
+    "read_files_elapsed": 0.043405700009316206,
+    "load_macros_elapsed": 0.7450828000437468,
+    "parse_project_elapsed": 0.8847814999753609,
+    "patch_sources_elapsed": 0.023141699959523976,
+    "process_manifest_elapsed": 0.038400899968110025,
+    "load_all_elapsed": 1.8088395000668243,
+    "projects": [
+        {
+            "project_name": "finshield",
+            "elapsed": 0.8806610001483932,
+            "parsers": [
+                {
+                    "parser": "model",
+                    "elapsed": 0.29866800003219396,
+                    "parsed_path_count": 5
+                },
+                {
+                    "parser": "test",
+                    "elapsed": 0.1277791999746114,
+                    "parsed_path_count": 1
+                },
+                {
+                    "parser": "test",
+                    "elapsed": 0.45267260004766285,
+                    "parsed_path_count": 2
+                }
+            ],
+            "parsed_path_count": 8
+        },
+        {
+            "project_name": "dbt_snowflake",
+            "elapsed": 0.0024019000120460987,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "dbt",
+            "elapsed": 0.001553799957036972,
+            "parsers": [
+                {
+                    "parser": "doc",
+                    "elapsed": 0.00026469992008060217,
+                    "parsed_path_count": 1
+                }
+            ],
+            "parsed_path_count": 1
+        }
+    ]
+}

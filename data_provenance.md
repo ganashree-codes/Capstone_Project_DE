@@ -15,6 +15,7 @@
 - Transaction records and the `is_fraud` label are real, dataset-provided historical data.
 - Streaming is **simulated**: the static CSV is replayed through a Kafka producer at a configurable interval to mimic a live transaction feed. From Kafka onward (Spark Structured Streaming, enrichment, detection, writes to Snowflake), the processing architecture is genuine streaming.
 - Merchant risk scores are entirely synthetic (Faker-generated), designed to represent realistic reference/compliance data that a production system would maintain independently of transaction data.
+- Age is derived from dob as a non-identifying bracket (age_group, e.g. "36-50") before the raw dob value is masked — this preserves age-based fraud analysis (e.g. fraud rate by age group) without exposing exact birthdates downstream.
 - This system detects and flags suspicious transactions for review; it does not perform real-time transaction authorization/blocking, which is a separate system in production fraud architectures.
 
 ## Canonical Event Schema (Transactions)
@@ -40,6 +41,7 @@ Raw CSV columns renamed/dropped once during producer prep, then used consistentl
 | `dob` | `dob` | string (date) | PII — masked downstream |
 | `merch_lat`, `merch_long` | `merch_lat`, `merch_long` | float | Merchant location — used for geo-distance fraud signal |
 | `is_fraud` | `is_fraud` | int (0/1) | Ground truth — used only for offline precision/recall validation, never as an input to the detection logic itself |
+| `age_group` | `age_group` | string | Derived from `dob` (age bracket, e.g. "36-50"), computed **before** `dob` is masked. Retained in Silver/Gold as a non-identifying analytical field. |
 
 ## Canonical Schema (Merchant Risk Feed — via NiFi)
 

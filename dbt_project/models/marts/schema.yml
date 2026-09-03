@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: One row per unique customer (identified by hashed card number).
+    columns:
+      - name: customer_id
+        description: SHA-256 hash of the card number, used as a pseudonymous customer key.
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_merchants
+    description: One row per unique merchant, with risk/compliance attributes.
+    columns:
+      - name: merchant_id
+        tests:
+          - not_null
+          
+
+  - name: dim_time
+    description: Date/time dimension derived from transaction event timestamps.
+    columns:
+      - name: event_timestamp
+        tests:
+          - not_null
+
+  - name: fact_transactions
+    description: Central fact table - one row per transaction, foreign keys to dims.
+    columns:
+      - name: transaction_id
+        tests:
+          - not_null
+          
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_id
+      - name: merchant_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_merchant')
+              field: merchant_id

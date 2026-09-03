@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 from pyspark.sql import SparkSession, Window
 from pyspark.sql.functions import (
     from_json, col, sha2, regexp_replace, row_number, count, avg,
-    when, lit, current_timestamp
+    when, lit, current_timestamp,datediff,current_date, to_date,
 )
 from pyspark.sql.types import (
     StructType, StructField, StringType, DoubleType, IntegerType, BooleanType
@@ -49,8 +49,8 @@ transaction_schema = StructType([
     StructField("city", StringType(), True),
     StructField("state", StringType(), True),
     StructField("zip", StringType(), True),
-    StructField("customer_lat", DoubleType(), True),
-    StructField("customer_long", DoubleType(), True),
+    StructField("lat", DoubleType(), True),
+    StructField("long", DoubleType(), True),
     StructField("city_pop", IntegerType(), True),
     StructField("job", StringType(), True),
     StructField("dob", StringType(), True),
@@ -176,6 +176,18 @@ bronze_merch_query = merch_parsed_stream.writeStream \
 # =========================================================================
 # Stage D - PII masking module
 # =========================================================================
+# deriving age_group before masking dob
+
+def add_age_group(df):
+    df = df.withColumn("age", (datediff(current_date(), to_date(col("dob"))) / 365.25).cast("int"))
+    df = df.withColumn("age_group",
+        when(col("age") < 26, "18-25")
+        .when(col("age") < 36, "26-35")
+        .when(col("age") < 51, "36-50")
+        .when(col("age") < 66, "51-65")
+        .otherwise("65+")
+    )
+    return df
 
 def mask_pii(df):
     return df \
@@ -233,12 +245,12 @@ def apply_fraud_detection(df):
 SILVER_COLUMN_ORDER = [
     "transaction_id", "event_timestamp", "cc_num_hash", "merchant", "category",
     "amt", "customer_first_name", "customer_last_name", "gender", "street",
-    "city", "state", "zip", "customer_lat", "customer_long", "city_pop",
+    "city", "state", "zip", "lat", "long", "city_pop",
     "job", "dob", "merch_lat", "merch_long", "is_fraud",
     "risk_score", "is_blacklisted", "last_flagged_date", "compliance_status", "last_updated",
     "txn_count_in_batch", "high_amount_flag", "high_velocity_flag",
     "high_risk_merchant_flag", "blacklisted_merchant_flag",
-    "risk_score_computed", "fraud_flag"
+    "risk_score_computed","age_group","fraud_flag"
 ]
 
 
@@ -257,7 +269,7 @@ def process_silver_batch(batch_df, batch_id):
     # Stage C: enrichment join (stream-static; batch_df here is one streaming
     # micro-batch materialized as a regular DataFrame inside foreachBatch)
     enriched = batch_df.join(merchant_ref_df, on="merchant", how="left")
-
+    enriched = add_age_group(enriched)
     # Stage D: PII masking
     masked = mask_pii(enriched)
 

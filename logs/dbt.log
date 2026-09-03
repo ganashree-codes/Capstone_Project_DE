@@ -1,0 +1,23 @@
+[0m12:07:29.949817 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002349C928980>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002349EE1FED0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002349EE1FC50>]}
+
+
+============================== 12:07:29.961758 | e371dcdd-e870-4769-b32a-59c133f36f2c ==============================
+[0m12:07:29.961758 [info ] [MainThread]: Running with dbt=1.12.0
+[0m12:07:29.963409 [debug] [MainThread]: running dbt with arguments {'maximum_seed_size_mib': '1', 'no_print': 'None', 'version_check': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'static_parser': 'True', 'target_path': 'None', 'printer_width': '80', 'write_json': 'True', 'empty': 'None', 'log_cache_events': 'False', 'introspect': 'True', 'cache_selected_only': 'False', 'fail_fast': 'False', 'debug': 'False', 'log_format': 'default', 'profiles_dir': 'C:\\Users\\ganas\\.dbt', 'send_anonymous_usage_stats': 'True', 'quiet': 'False', 'warn_error': 'None', 'partial_parse': 'True', 'invocation_command': 'dbt debug', 'hints_enabled': 'True', 'indirect_selection': 'eager', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': 'logs'}
+[0m12:07:30.011427 [info ] [MainThread]: dbt version: 1.12.0
+[0m12:07:30.013193 [info ] [MainThread]: python version: 3.13.14
+[0m12:07:30.014599 [info ] [MainThread]: python path: C:\Users\ganas\AppData\Local\Programs\Python\Python313\python.exe
+[0m12:07:30.016093 [info ] [MainThread]: os info: Windows-11-10.0.26200-SP0
+[0m12:07:43.010448 [debug] [MainThread]: Snowflake adapter: Setting snowflake.connector to ERROR (file logging only)
+[0m12:07:43.012062 [debug] [MainThread]: Snowflake adapter: Setting botocore to ERROR (file logging only)
+[0m12:07:43.013180 [debug] [MainThread]: Snowflake adapter: Setting boto3 to ERROR (file logging only)
+[0m12:07:43.392712 [info ] [MainThread]: Using profiles dir at C:\Users\ganas\.dbt
+[0m12:07:43.394933 [info ] [MainThread]: Using profiles.yml file at C:\Users\ganas\.dbt\profiles.yml
+[0m12:07:43.396907 [info ] [MainThread]: Using dbt_project.yml file at C:\Final_Capstone_Project\dbt_project.yml
+[0m12:07:43.399883 [error] [MainThread]: [[31mERROR[0m]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m12:07:43.406092 [debug] [MainThread]: Command `dbt debug` failed at 12:07:43.405268 after 13.68 seconds
+[0m12:07:43.408719 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000234C0337A80>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000234C07B5A30>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000234C08245A0>]}
+[0m12:07:43.410995 [debug] [MainThread]: Flushing usage events
+[0m12:07:44.539242 [debug] [MainThread]: An error was encountered while trying to flush usage events

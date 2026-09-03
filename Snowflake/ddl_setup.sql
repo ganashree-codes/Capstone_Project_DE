@@ -13,7 +13,7 @@ CREATE SCHEMA IF NOT EXISTS FINSHIELD.GOLD;
 -- BRONZE — raw, as-received data (matches transaction_schema in streaming_job.py)
 -- =========================================================================
 
-CREATE TABLE IF NOT EXISTS FINSHIELD.BRONZE.TRANSACTIONS (
+CREATE OR REPLACE TABLE FINSHIELD.BRONZE.TRANSACTIONS (
     transaction_id        STRING,
     event_timestamp       STRING,
     cc_num                STRING,
@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS FINSHIELD.BRONZE.TRANSACTIONS (
     city                    STRING,
     state                   STRING,
     zip                     STRING,
-    customer_lat            FLOAT,
-    customer_long            FLOAT,
+    lat                     FLOAT,
+    long                    FLOAT,
     city_pop                 INTEGER,
     job                      STRING,
     dob                      STRING,
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS FINSHIELD.BRONZE.TRANSACTIONS (
     merch_long                FLOAT,
     is_fraud                  INTEGER
 );
+
 
 -- matches merchant_schema in streaming_job.py
 CREATE TABLE IF NOT EXISTS FINSHIELD.BRONZE.MERCHANT_UPDATES (
@@ -51,29 +52,29 @@ CREATE TABLE IF NOT EXISTS FINSHIELD.BRONZE.MERCHANT_UPDATES (
 -- SILVER — masked, enriched, fraud-flagged (matches process_silver_batch output)
 -- =========================================================================
 
-CREATE TABLE IF NOT EXISTS FINSHIELD.SILVER.TRANSACTIONS_ENRICHED (
+CREATE OR REPLACE TABLE FINSHIELD.SILVER.TRANSACTIONS_ENRICHED (
     transaction_id            STRING,
     event_timestamp            STRING,
-    cc_num_hash                 STRING,   -- masked (SHA-256), raw cc_num dropped
+    cc_num_hash                 STRING,
     merchant                     STRING,
     category                     STRING,
     amt                           FLOAT,
-    customer_first_name          STRING,  -- masked
-    customer_last_name           STRING,  -- masked
+    customer_first_name          STRING,
+    customer_last_name           STRING,
     gender                        STRING,
-    street                        STRING,  -- masked
+    street                        STRING,
     city                          STRING,
     state                         STRING,
     zip                           STRING,
-    customer_lat                  FLOAT,
-    customer_long                  FLOAT,
+    lat                            FLOAT,
+    long                           FLOAT,
     city_pop                       INTEGER,
     job                            STRING,
-    dob                            STRING,  -- masked
+    dob                            STRING,
     merch_lat                      FLOAT,
     merch_long                      FLOAT,
     is_fraud                        INTEGER,
-    risk_score                      INTEGER,  -- from merchant reference join
+    risk_score                      INTEGER,
     is_blacklisted                   BOOLEAN,
     last_flagged_date                 STRING,
     compliance_status                  STRING,
@@ -84,5 +85,6 @@ CREATE TABLE IF NOT EXISTS FINSHIELD.SILVER.TRANSACTIONS_ENRICHED (
     high_risk_merchant_flag                 INTEGER,
     blacklisted_merchant_flag                INTEGER,
     risk_score_computed                       INTEGER,
-    fraud_flag                                 BOOLEAN
+    age_group                                  STRING,
+    fraud_flag                                  BOOLEAN
 );
