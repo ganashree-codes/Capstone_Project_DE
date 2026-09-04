@@ -6,3 +6,5 @@ producer/data/*.csv
 spark_jobs/checkpoints/
 faker_source/dropzone/*.json
 .DS_Store
+dbt_project/profiles.yml
+docker-compose.yml

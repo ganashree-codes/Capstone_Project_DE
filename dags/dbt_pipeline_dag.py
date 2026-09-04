@@ -27,7 +27,7 @@ with DAG(
     description='Runs dbt models (Silver -> Gold) and tests on a schedule',
     default_args=default_args,
     start_date=datetime(2026, 1, 1),
-    schedule='@daily',
+    schedule='@hourly',
     catchup=False,
     tags=['dbt', 'snowflake'],
 ) as dag:
