@@ -96,5 +96,4 @@ Airflow (hourly) → Gold suspicious-activity check → Email alert to security 
   historical dataset, replayed through Kafka to simulate a live feed;
   processing from Kafka onward is genuine streaming architecture.
 
-## Demo
-*(link to demo video/GIF once recorded)*
+
