@@ -71,7 +71,7 @@ with DAG(
     # Native Airflow EmailOperator using environment SMTP and Jinja templates
     send_alert = EmailOperator(
         task_id='send_internal_security_alert',
-        to='gana.drk@gmail.com', 
+        to='***********', 
         subject='🚨 [FinShield Security Ops] High-Risk Alert: {{ ti.xcom_pull(task_ids="check_fraud_metrics", key="fraud_count") }} Anomalies Flagged',
         html_content=""""
         <h3>[FinShield Automated Pipeline Surveillance]</h3>
